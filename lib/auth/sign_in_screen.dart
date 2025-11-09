@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:mysmallshop/screens/home_screen.dart';
 import 'package:mysmallshop/theme/app_colors.dart';
 import 'package:mysmallshop/widgets/custom_elevated_button.dart';
@@ -22,6 +23,12 @@ class SignInScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Container(
+                  width: 150,
+                  height: 150,
+                  child: Image.asset("assets/images/logo.png"),
+                ),
+                Gap(20),
                 const Text(
                   'Welcome Back',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),

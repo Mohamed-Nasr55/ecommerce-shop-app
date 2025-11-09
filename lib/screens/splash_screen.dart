@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:mysmallshop/auth/sign_in_screen.dart';
-import 'package:mysmallshop/theme/theme.dart';
+import 'package:mysmallshop/theme/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = '/splash';
@@ -16,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const SignInScreen()),
@@ -27,26 +28,31 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppThemes.tealLight.primaryColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo
-            Image.asset('assets/images/hamburger.png', width: 120, height: 120),
-            const SizedBox(height: 20),
-            const Text(
-              'ShopApp',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: double.infinity,
+                  child: Image.asset("assets/images/logo.png"),
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            const CircularProgressIndicator(color: Colors.white),
-          ],
+              Gap(20),
+              const Text(
+                'ShopApp',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.tealPrimary,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

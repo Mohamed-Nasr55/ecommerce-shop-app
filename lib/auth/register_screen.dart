@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:mysmallshop/auth/sign_in_screen.dart';
 import 'package:mysmallshop/screens/home_screen.dart';
 import 'package:mysmallshop/theme/app_colors.dart';
@@ -20,56 +21,64 @@ class RegisterScreen extends StatelessWidget {
         body: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text(
-                  'Let`s Create New Account For You ',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 20),
-                CustomTextField(
-                  labelText: 'Full Name',
-                  prefixIcon: Icons.person,
-                ),
-                const SizedBox(height: 16),
-
-                CustomTextField(labelText: 'Email', prefixIcon: Icons.email),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  labelText: 'Password',
-                  prefixIcon: Icons.lock,
-                  obscureText: true,
-                ),
-                const SizedBox(height: 40),
-
-                CustomElevatedButton(
-                  text: 'Register',
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => SignInScreen()),
-                    );
-                  },
-                  child: const Text(
-                    'Already have an account? Sign In',
-                    style: TextStyle(color: AppColors.tealPrimary),
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    width: 150,
+                    height: 150,
+                    child: Image.asset("assets/images/logo.png"),
                   ),
-                ),
-              ],
+                  Gap(20),
+                  const Text(
+                    'Let`s Create New Account For You ',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  CustomTextField(
+                    labelText: 'Full Name',
+                    prefixIcon: Icons.person,
+                  ),
+                  const SizedBox(height: 16),
+
+                  CustomTextField(labelText: 'Email', prefixIcon: Icons.email),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    labelText: 'Password',
+                    prefixIcon: Icons.lock,
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 40),
+
+                  CustomElevatedButton(
+                    text: 'Register',
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => SignInScreen()),
+                      );
+                    },
+                    child: const Text(
+                      'Already have an account? Sign In',
+                      style: TextStyle(color: AppColors.tealPrimary),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

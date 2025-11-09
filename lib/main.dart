@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ShopApp',
-      theme: AppThemes.tealDark,
+      theme: AppThemes.tealLight,
       darkTheme: AppThemes.tealDark,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
