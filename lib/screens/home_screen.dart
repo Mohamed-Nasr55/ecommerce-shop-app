@@ -25,9 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
         List.generate(
           6,
           (index) => {
-            'image': 'assets/images/beefnoodel.png',
+            'image': 'assets/images/image.png',
             'title': 'Product $index',
-            'price': '\$${(index + 1) * 15}.00',
+            'price': '\$ ${(index + 1) * 15}.00',
           },
         ).where((product) {
           if (_searchName.isEmpty) return true;

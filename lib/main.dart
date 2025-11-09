@@ -13,8 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ShopApp',
-       theme: AppThemes.tealLight, // choose light theme
-      darkTheme: AppThemes.tealDark, // corresponding dark theme
+      theme: AppThemes.tealDark,
+      darkTheme: AppThemes.tealDark,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
