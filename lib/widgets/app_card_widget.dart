@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mysmallshop/theme/theme.dart';
 
-class ProductCard extends StatelessWidget {
+class AppCardWidget extends StatelessWidget {
   final String image;
   final String title;
   final String price;
   final VoidCallback onAdd;
 
-  const ProductCard({
+  const AppCardWidget({
     super.key,
     required this.image,
     required this.title,
