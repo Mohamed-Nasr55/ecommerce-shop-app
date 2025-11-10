@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/screens/home_screen.dart';
+import 'package:mysmallshop/home/screens/home_screen.dart';
 import 'package:mysmallshop/theme/app_colors.dart';
 import 'package:mysmallshop/widgets/custom_elevated_button.dart';
 import 'register_screen.dart';
