@@ -7,6 +7,7 @@ import 'package:mysmallshop/home/widgets/categories_list.dart';
 import 'package:mysmallshop/home/widgets/products_grid_builder.dart';
 import 'package:mysmallshop/home/widgets/promo_banner.dart';
 import 'package:mysmallshop/home/widgets/search_bar_widget.dart';
+import 'package:mysmallshop/screens/categories_screen.dart';
 import 'package:mysmallshop/screens/profile_screen.dart';
 import 'package:mysmallshop/theme/app_colors.dart';
 import 'package:mysmallshop/theme/theme.dart';
@@ -45,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final pages = [
       _buildHomePage(products),
-      const Center(child: Text('Categories Page')),
+      const Center(child: CategoriesScreen()),
       const Center(child: CartScreen()),
       const Center(child: ProfileScreen()),
     ];

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 class CustomElevatedButton extends StatelessWidget {
@@ -8,6 +6,7 @@ class CustomElevatedButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final IconData? icon;
+  final double height;
 
   const CustomElevatedButton({
     super.key,
@@ -16,6 +15,7 @@ class CustomElevatedButton extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.icon,
+    required this.height,
   });
 
   @override
@@ -24,12 +24,14 @@ class CustomElevatedButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
+      height: height,
       child: ElevatedButton(
         onPressed: onPressed,
+
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? theme.primaryColor,
           foregroundColor: textColor ?? Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),

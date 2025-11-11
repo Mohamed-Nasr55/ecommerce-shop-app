@@ -42,7 +42,6 @@ class SignInScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
-                // Email field
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Email',
@@ -54,7 +53,6 @@ class SignInScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Password field
                 TextField(
                   obscureText: true,
                   decoration: InputDecoration(
@@ -77,6 +75,7 @@ class SignInScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  height: 50,
                 ),
 
                 const SizedBox(height: 16),

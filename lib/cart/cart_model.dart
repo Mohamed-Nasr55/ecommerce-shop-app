@@ -1,59 +1,50 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class CartModel {
   static final CartModel _instance = CartModel._internal();
   factory CartModel() => _instance;
   CartModel._internal();
 
-  final List<Map<String, dynamic>> _items = [];
-
+  final List<Map<String, dynamic>> items = [];
   final ValueNotifier<int> cartCountNotifier = ValueNotifier<int>(0);
 
-  List<Map<String, dynamic>> get items => _items;
-
-  double get total {
-    double sum = 0;
-    for (var item in _items) {
-      sum += (item['price'] as double) * (item['quantity'] as int);
-    }
-    return sum;
-  }
-
-  void _updateCartCount() {
-    int count = 0;
-    for (var item in _items) {
-      count += item['quantity'] as int;
-    }
-    cartCountNotifier.value = count;
-  }
-
   void addItem(Map<String, dynamic> product) {
-    final index = _items.indexWhere((item) => item['title'] == product['title']);
-    if (index != -1) {
-      _items[index]['quantity'] += 1;
+    final existingIndex =
+        items.indexWhere((item) => item['title'] == product['title']);
+
+    if (existingIndex != -1) {
+      items[existingIndex]['quantity'] += 1;
     } else {
-      _items.add({...product});
+      items.add({
+        ...product,
+        'quantity': 1,
+      });
     }
     _updateCartCount();
   }
 
-  void addItemQuantity(Map<String, dynamic> item) {
-    final index = _items.indexWhere((i) => i['title'] == item['title']);
-    if (index != -1) {
-      _items[index]['quantity'] += 1;
-      _updateCartCount();
-    }
+  void removeItem(int index) {
+    items.removeAt(index);
+    _updateCartCount();
   }
 
-  void removeItemQuantity(Map<String, dynamic> item) {
-    final index = _items.indexWhere((i) => i['title'] == item['title']);
-    if (index != -1) {
-      if (_items[index]['quantity'] > 1) {
-        _items[index]['quantity'] -= 1;
-      } else {
-        _items.removeAt(index);
-      }
-      _updateCartCount();
+  void _updateCartCount() {
+    int totalCount = 0;
+    for (var item in items) {
+      totalCount += item['quantity'] as int;
     }
+    cartCountNotifier.value = totalCount;
+  }
+
+  double get total {
+    double total = 0.0;
+    for (var item in items) {
+      final priceString = (item['price'] as String)
+          .replaceAll('\$', '')
+          .replaceAll(',', '')
+          .trim();
+      total += (double.tryParse(priceString) ?? 0) * (item['quantity'] as int);
+    }
+    return total;
   }
 }
