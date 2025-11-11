@@ -24,11 +24,14 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
       selectedItemColor: theme.primaryColor,
       unselectedItemColor: Colors.grey,
       type: BottomNavigationBarType.fixed,
-      onTap: widget.onTap, 
+      onTap: widget.onTap,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Categories'),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorites'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.category),
+          label: 'Categories',
+        ),
+        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       ],
     );

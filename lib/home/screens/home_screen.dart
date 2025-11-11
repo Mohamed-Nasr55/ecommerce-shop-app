@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/theme/app_colors.dart';
-import 'package:mysmallshop/theme/theme.dart';
-import 'package:mysmallshop/widgets/bottom_nav_bar_widget.dart';
+import 'package:mysmallshop/cart/cart_home_icon.dart';
+import 'package:mysmallshop/cart/cart_model.dart';
+import 'package:mysmallshop/cart/cart_screen.dart';
 import 'package:mysmallshop/home/widgets/categories_list.dart';
 import 'package:mysmallshop/home/widgets/products_grid_builder.dart';
 import 'package:mysmallshop/home/widgets/promo_banner.dart';
 import 'package:mysmallshop/home/widgets/search_bar_widget.dart';
+import 'package:mysmallshop/screens/profile_screen.dart';
+import 'package:mysmallshop/theme/app_colors.dart';
+import 'package:mysmallshop/theme/theme.dart';
+import 'package:mysmallshop/widgets/bottom_nav_bar_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,15 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     final products =
         List.generate(
           6,
           (index) => {
             'image': 'assets/images/image.png',
             'title': 'Product $index',
-            'price': '\$ ${(index + 1) * 15}.00',
+            'price': '\$${(index + 1) * 15}.00',
+            'description': 'This is a detailed description of Product $index.',
+            'rating': '4.5',
           },
         ).where((product) {
           if (_searchName.isEmpty) return true;
@@ -42,18 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final pages = [
       _buildHomePage(products),
       const Center(child: Text('Categories Page')),
-      const Center(child: Text('Favorites Page')),
-      const Center(child: Text('Profile Page')),
+      const Center(child: CartScreen()),
+      const Center(child: ProfileScreen()),
     ];
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Image.asset("assets/images/logo.png"),
-          ),
           title: const Text(
             'Shop App',
             style: TextStyle(
@@ -63,13 +63,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           backgroundColor: AppThemes.tealLight.primaryColor,
+          actions: [CartHomeIcon()],
         ),
         body: pages[_currentIndex],
         bottomNavigationBar: BottomNavBarWidget(
           currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() => _currentIndex = index);
-          },
+          onTap: (index) => setState(() => _currentIndex = index),
         ),
       ),
     );
@@ -96,11 +95,22 @@ class _HomeScreenState extends State<HomeScreen> {
           const PromoBannerWidget(),
           const Gap(10),
           const Text(
-            "Popular Products",
+            "Products",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
-          Gap(15),
-          PopularProductsGrid(products: products),
+          const Gap(15),
+          ProductsGridBuilder(
+            products: products,
+            onAddToCart: (product) {
+              CartModel().addItem({
+                'image': product['image'],
+                'title': product['title'],
+                'price': double.parse(product['price']!.replaceAll('\$', '')),
+                'quantity': 1,
+              });
+              setState(() {});
+            },
+          ),
         ],
       ),
     );
