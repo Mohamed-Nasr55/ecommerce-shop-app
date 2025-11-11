@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mysmallshop/cart/cart_helper.dart';
 import 'package:mysmallshop/theme/theme.dart';
+import 'package:provider/provider.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(create: (_) => CartHelper(), child: const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:mysmallshop/cart/cart_model.dart';
+import 'package:mysmallshop/cart/cart_screen.dart';
 import 'package:mysmallshop/widgets/custom_elevated_button.dart';
 import 'package:mysmallshop/widgets/rating_widget.dart';
 
@@ -8,6 +10,7 @@ class ProductDetailsScreen extends StatelessWidget {
   final String title;
   final String price;
   final String description;
+  final double rating;
 
   const ProductDetailsScreen({
     super.key,
@@ -15,7 +18,7 @@ class ProductDetailsScreen extends StatelessWidget {
     required this.title,
     required this.price,
     required this.description,
-    required double rating,
+    required this.rating,
   });
 
   @override
@@ -28,8 +31,51 @@ class ProductDetailsScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: theme.primaryColor,
-        title: const Text("Product Details"),
+        title: Text("$title"),
         centerTitle: true,
+        actions: [
+          ValueListenableBuilder<int>(
+            valueListenable: CartModel().cartCountNotifier,
+            builder: (context, count, _) {
+              return Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.shopping_cart_outlined,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => CartScreen()),
+                      );
+                    },
+                  ),
+                  if (count > 0)
+                    Positioned(
+                      right: 6,
+                      top: 6,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '$count',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -51,7 +97,6 @@ class ProductDetailsScreen extends StatelessWidget {
               ),
             ),
             const Gap(20),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -74,13 +119,9 @@ class ProductDetailsScreen extends StatelessWidget {
                 ),
               ],
             ),
-
             const Gap(10),
-
-            RatingWidget(),
-
+            RatingWidget(rating: rating),
             const Gap(20),
-
             const Text(
               "Description",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -94,11 +135,22 @@ class ProductDetailsScreen extends StatelessWidget {
                 height: 1.5,
               ),
             ),
-            const Gap(150),
+            const Gap(40),
             CustomElevatedButton(
               text: "Add to Cart",
               icon: Icons.shopping_cart,
-              onPressed: () {},
+              onPressed: () {
+                CartModel().addItem({
+                  'image': image,
+                  'title': title,
+                  'price': double.parse(price.replaceAll('\$', '')),
+                  'quantity': 1,
+                });
+
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text("$title added to cart")));
+              },
             ),
           ],
         ),
