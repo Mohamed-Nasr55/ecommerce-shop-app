@@ -61,7 +61,7 @@ class RegisterScreen extends StatelessWidget {
                           builder: (context) => const HomeScreen(),
                         ),
                       );
-                    },
+                    }, height: 50,
                   ),
 
                   const SizedBox(height: 16),

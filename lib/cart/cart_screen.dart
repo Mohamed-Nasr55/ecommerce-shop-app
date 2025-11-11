@@ -4,42 +4,38 @@ import 'package:mysmallshop/cart/cart_model.dart';
 import 'package:mysmallshop/theme/app_colors.dart';
 import 'package:mysmallshop/widgets/custom_elevated_button.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  final CartModel cart = CartModel();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          " Cart",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Theme.of(context).primaryColorLight,
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ValueListenableBuilder<int>(
-          valueListenable: CartModel().cartCountNotifier,
-          builder: (context, _, __) {
-            final cartItems = CartModel().items;
-            double total = 0;
-            for (var item in cartItems) {
-              total += (item['price'] as double) * (item['quantity'] as int);
-            }
+      appBar: AppBar(foregroundColor: Colors.white),
+      body: ValueListenableBuilder<int>(
+        valueListenable: cart.cartCountNotifier,
+        builder: (context, _, __) {
+          final cartItems = cart.items;
+          double total = cart.total;
 
-            if (cartItems.isEmpty) {
-              return const Center(
-                child: Text(
-                  "cart is empty",
-                  style: TextStyle(fontSize: 20, color: AppColors.tealPrimary),
-                ),
-              );
-            }
+          if (cartItems.isEmpty) {
+            return const Center(
+              child: Text(
+                "Cart is Empty ",
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            );
+          }
 
-            return Column(
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               children: [
                 Expanded(
                   child: ListView.separated(
@@ -48,6 +44,7 @@ class CartScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = cartItems[index];
                       return Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
@@ -68,12 +65,11 @@ class CartScreen extends StatelessWidget {
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.black,
                                   ),
                                 ),
                                 const Gap(4),
                                 Text(
-                                  "\$${item['price']}",
+                                  " ${item['price']}",
                                   style: const TextStyle(
                                     color: AppColors.tealPrimary,
                                     fontWeight: FontWeight.bold,
@@ -86,17 +82,32 @@ class CartScreen extends StatelessWidget {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  CartModel().removeItemQuantity(item);
+                                  setState(() {
+                                    if (item['quantity'] > 1) {
+                                      item['quantity'] -= 1;
+                                    } else {
+                                      cart.removeItem(index);
+                                    }
+                                    cart.cartCountNotifier.value =
+                                        cart.cartCountNotifier.value - 1;
+                                  });
                                 },
                                 icon: const Icon(
                                   Icons.remove_circle_outline,
                                   color: AppColors.tealPrimary,
                                 ),
                               ),
-                              Text("${item['quantity']}"),
+                              Text(
+                                "${item['quantity']}",
+                                style: const TextStyle(fontSize: 16),
+                              ),
                               IconButton(
                                 onPressed: () {
-                                  CartModel().addItemQuantity(item);
+                                  setState(() {
+                                    item['quantity'] += 1;
+                                    cart.cartCountNotifier.value =
+                                        cart.cartCountNotifier.value + 1;
+                                  });
                                 },
                                 icon: const Icon(
                                   Icons.add_circle_outline,
@@ -110,7 +121,7 @@ class CartScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                const Divider(color: Colors.grey),
+                const Divider(),
                 const Gap(10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,9 +134,9 @@ class CartScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "\$ ${total.toStringAsFixed(2)}",
+                      "\$${total.toStringAsFixed(2)}",
                       style: const TextStyle(
-                        color: Colors.black,
+                        color: AppColors.tealPrimary,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -142,12 +153,13 @@ class CartScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  height: 50,
                 ),
-                const Gap(20),
+                Gap(10),
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

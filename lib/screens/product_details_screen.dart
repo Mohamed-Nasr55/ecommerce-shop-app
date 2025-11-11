@@ -151,6 +151,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   context,
                 ).showSnackBar(SnackBar(content: Text("$title added to cart")));
               },
+              height: 50,
             ),
           ],
         ),

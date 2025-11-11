@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:mysmallshop/cart/cart_model.dart';
 import 'package:mysmallshop/screens/product_details_screen.dart';
+import 'package:mysmallshop/theme/app_colors.dart';
 import 'package:mysmallshop/widgets/custom_elevated_button.dart';
+import 'package:mysmallshop/widgets/rating_widget.dart';
 
 class ProductsGridBuilder extends StatelessWidget {
   final List<Map<String, String>> products;
@@ -61,7 +64,7 @@ class ProductsGridBuilder extends StatelessWidget {
                       ),
                       child: Image.asset(
                         product['image']!,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.fill,
                         width: double.infinity,
                       ),
                     ),
@@ -79,15 +82,15 @@ class ProductsGridBuilder extends StatelessWidget {
                       const Gap(6),
                       Text(
                         product['price']!,
-                        style: const TextStyle(color: Colors.teal),
+                        style: const TextStyle(color: AppColors.tealPrimary),
                       ),
-                      const Gap(8),
-                      SizedBox(
-                        width: double.infinity,
-                        child: CustomElevatedButton(
-                          text: "Add To Cart",
-                          onPressed: () => onAddToCart(product),
-                        ),
+                      Gap(5),
+                      CustomElevatedButton(
+                        text: "Add To Cart",
+                        onPressed: () {
+                          CartModel().addItem(product);
+                        },
+                        height: 35,
                       ),
                     ],
                   ),
