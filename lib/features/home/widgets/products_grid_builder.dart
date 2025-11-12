@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/cart/cart_model.dart';
 import 'package:mysmallshop/screens/product_details_screen.dart';
-import 'package:mysmallshop/theme/app_colors.dart';
+import 'package:mysmallshop/features/theme/app_colors.dart';
 import 'package:mysmallshop/widgets/custom_elevated_button.dart';
-import 'package:mysmallshop/widgets/rating_widget.dart';
 
 class ProductsGridBuilder extends StatelessWidget {
   final List<Map<String, String>> products;
-  final Function(Map<String, String>) onAddToCart;
+  final void Function(Map<String, String>) onAddToCart;
 
   const ProductsGridBuilder({
     super.key,
@@ -31,19 +29,24 @@ class ProductsGridBuilder extends StatelessWidget {
       itemBuilder: (context, index) {
         final product = products[index];
 
+        final image = product['image'] ?? '';
+        final title = product['title'] ?? '';
+        final price = product['price'] ?? '';
+        final description = product['description'] ?? '';
+        final rating = double.tryParse(product['rating'] ?? '0') ?? 0;
+
         return GestureDetector(
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder:
-                    (_) => ProductDetailsScreen(
-                      image: product['image']!,
-                      title: product['title']!,
-                      price: product['price']!,
-                      description: product['description']!,
-                      rating: double.tryParse(product['rating'] ?? '0') ?? 0,
-                    ),
+                builder: (_) => ProductDetailsScreen(
+                  image: image,
+                  title: title,
+                  price: price,
+                  description: description,
+                  rating: rating,
+                ),
               ),
             );
           },
@@ -57,13 +60,13 @@ class ProductsGridBuilder extends StatelessWidget {
               children: [
                 Expanded(
                   child: Hero(
-                    tag: product['title']!,
+                    tag: title,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(16),
                       ),
                       child: Image.asset(
-                        product['image']!,
+                        image,
                         fit: BoxFit.fill,
                         width: double.infinity,
                       ),
@@ -76,20 +79,18 @@ class ProductsGridBuilder extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        product['title']!,
+                        title,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       const Gap(6),
                       Text(
-                        product['price']!,
+                        price,
                         style: const TextStyle(color: AppColors.tealPrimary),
                       ),
-                      Gap(5),
+                      const Gap(5),
                       CustomElevatedButton(
                         text: "Add To Cart",
-                        onPressed: () {
-                          CartModel().addItem(product);
-                        },
+                        onPressed: () => onAddToCart(product),
                         height: 35,
                       ),
                     ],

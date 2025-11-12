@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/cart/cart_model.dart';
-import 'package:mysmallshop/home/widgets/products_grid_builder.dart';
-import 'package:mysmallshop/theme/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mysmallshop/features/cart/cart_cubit.dart';
+import 'package:mysmallshop/features/cart/cart_item.dart';
+import 'package:mysmallshop/features/cart/cart_state.dart';
+import 'package:mysmallshop/features/categories/category_item_widget.dart';
+import 'package:mysmallshop/features/home/widgets/products_grid_builder.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -25,8 +28,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     final products = List.generate(
       8,
       (index) => {
@@ -44,6 +45,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const Gap(40),
               const Text(
                 "Select a Category",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -61,45 +63,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 itemCount: _categories.length,
                 itemBuilder: (context, index) {
                   final category = _categories[index];
-                  final isSelected = _selectedCategory == category['name'];
-                  return GestureDetector(
+                  return CategoryItemWidget(
+                    name: category['name'],
+                    icon: category['icon'],
+                    isSelected: _selectedCategory == category['name'],
                     onTap: () {
                       setState(() {
                         _selectedCategory = category['name'];
                       });
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color:
-                            isSelected
-                                ? AppColors.tealButtonLight.withOpacity(0.2)
-                                : Colors.white,
-                        border: Border.all(
-                          color:
-                              isSelected
-                                  ? AppColors.tealButtonLight
-                                  : Colors.grey.shade300,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            category['icon'],
-                            size: 32,
-                            color: AppColors.tealButtonLight,
-                          ),
-                          const Gap(6),
-                          Text(
-                            category['name'],
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
                   );
                 },
               ),
@@ -113,20 +85,29 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   ),
                 ),
                 const Gap(10),
-                ProductsGridBuilder(
-                  products: products,
-                  onAddToCart: (product) {
-                    CartModel().addItem({
-                      'image': product['image'],
-                      'title': product['title'],
-                      'price': double.parse(
-                        product['price']!.replaceAll('\$', ''),
-                      ),
-                      'quantity': 1,
-                    });
-
-                    CartModel().cartCountNotifier.value =
-                        CartModel().cartCountNotifier.value + 1;
+                BlocBuilder<CartCubit, CartState>(
+                  builder: (context, cartState) {
+                    return ProductsGridBuilder(
+                      products: products,
+                      onAddToCart: (product) {
+                        context.read<CartCubit>().addItem(
+                          CartItem(
+                            title: product['title']!,
+                            image: product['image']!,
+                            price: double.parse(
+                              product['price']!.replaceAll('\$', ''),
+                            ),
+                          ),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content:
+                                Text('${product['title']} added to cart'),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
               ],

@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:mysmallshop/cart/cart_helper.dart';
-import 'package:mysmallshop/theme/theme.dart';
-import 'package:provider/provider.dart';
-import 'screens/splash_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mysmallshop/features/cart/cart_cubit.dart';
+import 'package:mysmallshop/screens/splash_screen.dart';
+import 'package:mysmallshop/features/theme/theme_cubit.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(create: (_) => CartHelper(), child: const MyApp()),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => CartCubit()),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
@@ -15,13 +21,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ShopApp',
-      theme: AppThemes.tealDark,
-      darkTheme: AppThemes.tealDark,
-      themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+    return BlocBuilder<ThemeCubit, ThemeData>(
+      builder: (context, theme) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Shop App',
+          theme: theme,
+          home: const SplashScreen(),
+        );
+      },
     );
   }
 }

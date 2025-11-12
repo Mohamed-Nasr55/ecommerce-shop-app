@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/auth/sign_in_screen.dart';
-import 'package:mysmallshop/home/screens/home_screen.dart';
-import 'package:mysmallshop/theme/app_colors.dart';
+import 'package:mysmallshop/features/auth/sign_in_screen.dart';
+import 'package:mysmallshop/features/home/screens/home_screen.dart';
+import 'package:mysmallshop/features/theme/app_colors.dart';
 import 'package:mysmallshop/widgets/custom_elevated_button.dart';
 import 'package:mysmallshop/widgets/custom_textfeild.dart';
 
