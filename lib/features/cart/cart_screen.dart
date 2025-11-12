@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/cart/cart_model.dart';
-import 'package:mysmallshop/theme/app_colors.dart';
+import 'package:mysmallshop/features/cart/cart_cubit.dart';
+import 'package:mysmallshop/features/cart/cart_state.dart';
+import 'package:mysmallshop/features/profile/screens/payment_method_screen.dart';
 import 'package:mysmallshop/widgets/custom_elevated_button.dart';
 
-class CartScreen extends StatefulWidget {
+class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
-
-  @override
-  State<CartScreen> createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
-  final CartModel cart = CartModel();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(foregroundColor: Colors.white),
-      body: ValueListenableBuilder<int>(
-        valueListenable: cart.cartCountNotifier,
-        builder: (context, _, __) {
-          final cartItems = cart.items;
-          double total = cart.total;
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+        title: const Text('My Cart'),
+        centerTitle: true,
+      ),
+      body: BlocBuilder<CartCubit, CartState>(
+        builder: (context, state) {
+          final cartItems = state.items;
+          final total = state.total;
 
           if (cartItems.isEmpty) {
             return const Center(
               child: Text(
-                "Cart is Empty ",
+                "Cart is Empty",
                 style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
             );
@@ -43,13 +42,14 @@ class _CartScreenState extends State<CartScreen> {
                     separatorBuilder: (_, __) => const Divider(),
                     itemBuilder: (context, index) {
                       final item = cartItems[index];
+
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Image.asset(
-                              item['image'],
+                              item.image,
                               width: 80,
                               height: 80,
                               fit: BoxFit.fill,
@@ -61,7 +61,7 @@ class _CartScreenState extends State<CartScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  item['title'],
+                                  item.title,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -69,9 +69,9 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                                 const Gap(4),
                                 Text(
-                                  " ${item['price']}",
+                                  "\$${item.price.toStringAsFixed(2)}",
                                   style: const TextStyle(
-                                    color: AppColors.tealPrimary,
+                                    color: Colors.teal,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -82,36 +82,28 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  setState(() {
-                                    if (item['quantity'] > 1) {
-                                      item['quantity'] -= 1;
-                                    } else {
-                                      cart.removeItem(index);
-                                    }
-                                    cart.cartCountNotifier.value =
-                                        cart.cartCountNotifier.value - 1;
-                                  });
+                                  context.read<CartCubit>().decreaseQuantity(
+                                    item.title,
+                                  );
                                 },
                                 icon: const Icon(
                                   Icons.remove_circle_outline,
-                                  color: AppColors.tealPrimary,
+                                  color: Colors.teal,
                                 ),
                               ),
                               Text(
-                                "${item['quantity']}",
+                                "${item.quantity}",
                                 style: const TextStyle(fontSize: 16),
                               ),
                               IconButton(
                                 onPressed: () {
-                                  setState(() {
-                                    item['quantity'] += 1;
-                                    cart.cartCountNotifier.value =
-                                        cart.cartCountNotifier.value + 1;
-                                  });
+                                  context.read<CartCubit>().increaseQuantity(
+                                    item.title,
+                                  );
                                 },
                                 icon: const Icon(
                                   Icons.add_circle_outline,
-                                  color: AppColors.tealPrimary,
+                                  color: Colors.teal,
                                 ),
                               ),
                             ],
@@ -136,7 +128,7 @@ class _CartScreenState extends State<CartScreen> {
                     Text(
                       "\$${total.toStringAsFixed(2)}",
                       style: const TextStyle(
-                        color: AppColors.tealPrimary,
+                        color: Colors.teal,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -147,15 +139,14 @@ class _CartScreenState extends State<CartScreen> {
                 CustomElevatedButton(
                   text: "Checkout",
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Proceeding to checkout..."),
-                      ),
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => PaymentMethodScreen()),
                     );
                   },
                   height: 50,
                 ),
-                Gap(10),
+                const Gap(10),
               ],
             ),
           );

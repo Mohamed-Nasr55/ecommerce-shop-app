@@ -41,7 +41,7 @@ class _CategoriesListWidgetState extends State<CategoriesList> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.teal : Colors.white,
+                color: isSelected ? Colors.teal : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(

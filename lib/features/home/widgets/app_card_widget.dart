@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/theme/theme.dart';
 import 'package:mysmallshop/widgets/rating_widget.dart';
 
 class AppCardWidget extends StatelessWidget {
@@ -61,7 +60,7 @@ class AppCardWidget extends StatelessWidget {
                   Text(price, style: const TextStyle(color: Colors.grey)),
                   Gap(8),
                   RatingWidget(),
-                  
+
                   Gap(8),
                   ElevatedButton(
                     onPressed: onAdd,
@@ -70,7 +69,7 @@ class AppCardWidget extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      backgroundColor: AppThemes.tealLight.primaryColor,
+                      backgroundColor: Theme.of(context).primaryColor,
                     ),
                     child: const Text('Add to Cart'),
                   ),

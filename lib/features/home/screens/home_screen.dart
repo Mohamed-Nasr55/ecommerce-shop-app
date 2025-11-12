@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/cart/cart_home_icon.dart';
-import 'package:mysmallshop/cart/cart_model.dart';
-import 'package:mysmallshop/cart/cart_screen.dart';
-import 'package:mysmallshop/home/widgets/categories_list.dart';
-import 'package:mysmallshop/home/widgets/products_grid_builder.dart';
-import 'package:mysmallshop/home/widgets/promo_banner.dart';
-import 'package:mysmallshop/home/widgets/search_bar_widget.dart';
-import 'package:mysmallshop/screens/categories_screen.dart';
-import 'package:mysmallshop/screens/profile_screen.dart';
-import 'package:mysmallshop/theme/app_colors.dart';
-import 'package:mysmallshop/theme/theme.dart';
+import 'package:mysmallshop/features/cart/cart_cubit.dart';
+import 'package:mysmallshop/features/cart/cart_item.dart';
+import 'package:mysmallshop/features/cart/cart_screen.dart';
+import 'package:mysmallshop/features/cart/cart_state.dart';
+import 'package:mysmallshop/features/categories/categories_screen.dart';
+import 'package:mysmallshop/features/home/widgets/categories_list.dart';
+import 'package:mysmallshop/features/home/widgets/home_appbar.dart';
+import 'package:mysmallshop/features/home/widgets/products_grid_builder.dart';
+import 'package:mysmallshop/features/home/widgets/promo_banner.dart';
+import 'package:mysmallshop/features/home/widgets/search_bar_widget.dart';
+import 'package:mysmallshop/features/profile/screens/profile_screen.dart';
 import 'package:mysmallshop/widgets/bottom_nav_bar_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -54,18 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Shop App',
-            style: TextStyle(
-              color: AppColors.tealButtonLight,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          backgroundColor: AppThemes.tealLight.primaryColor,
-          actions: [CartHomeIcon()],
-        ),
+        appBar: _currentIndex == 0 ? const HomeAppbar() : null,
         body: pages[_currentIndex],
         bottomNavigationBar: BottomNavBarWidget(
           currentIndex: _currentIndex,
@@ -100,16 +90,22 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
           const Gap(15),
-          ProductsGridBuilder(
-            products: products,
-            onAddToCart: (product) {
-              CartModel().addItem({
-                'image': product['image'],
-                'title': product['title'],
-                'price': double.parse(product['price']!.replaceAll('\$', '')),
-                'quantity': 1,
-              });
-              setState(() {});
+          BlocBuilder<CartCubit, CartState>(
+            builder: (context, cartState) {
+              return ProductsGridBuilder(
+                products: products,
+                onAddToCart: (product) {
+                  context.read<CartCubit>().addItem(
+                    CartItem(
+                      title: product['title']!,
+                      image: product['image']!,
+                      price: double.parse(
+                        product['price']!.replaceAll('\$', ''),
+                      ),
+                    ),
+                  );
+                },
+              );
             },
           ),
         ],

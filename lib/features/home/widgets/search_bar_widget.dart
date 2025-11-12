@@ -26,7 +26,7 @@ class SearchBarWidget extends StatelessWidget {
         fillColor:
             theme.brightness == Brightness.dark
                 ? Colors.grey.shade800
-                : Colors.grey.shade100,
+                : Colors.grey.shade300,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

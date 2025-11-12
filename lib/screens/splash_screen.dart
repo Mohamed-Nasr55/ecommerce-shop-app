@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/auth/sign_in_screen.dart';
-import 'package:mysmallshop/theme/app_colors.dart';
+import 'package:mysmallshop/features/auth/sign_in_screen.dart';
+import 'package:mysmallshop/features/theme/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = '/splash';

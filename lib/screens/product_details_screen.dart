@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:mysmallshop/cart/cart_model.dart';
-import 'package:mysmallshop/cart/cart_screen.dart';
+import 'package:mysmallshop/features/cart/cart_cubit.dart';
+import 'package:mysmallshop/features/cart/cart_item.dart';
+import 'package:mysmallshop/features/cart/cart_screen.dart';
 import 'package:mysmallshop/widgets/custom_elevated_button.dart';
 import 'package:mysmallshop/widgets/rating_widget.dart';
 
@@ -29,14 +31,14 @@ class ProductDetailsScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: theme.primaryColor,
-        title: Text("$title"),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+        title: Text(title),
         centerTitle: true,
         actions: [
-          ValueListenableBuilder<int>(
-            valueListenable: CartModel().cartCountNotifier,
-            builder: (context, count, _) {
+          BlocBuilder<CartCubit, dynamic>(
+            builder: (context, state) {
+              final count = context.read<CartCubit>().totalItems;
               return Stack(
                 children: [
                   IconButton(
@@ -47,7 +49,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => CartScreen()),
+                        MaterialPageRoute(builder: (_) => const CartScreen()),
                       );
                     },
                   ),
@@ -140,16 +142,16 @@ class ProductDetailsScreen extends StatelessWidget {
               text: "Add to Cart",
               icon: Icons.shopping_cart,
               onPressed: () {
-                CartModel().addItem({
-                  'image': image,
-                  'title': title,
-                  'price': double.parse(price.replaceAll('\$', '')),
-                  'quantity': 1,
-                });
-
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text("$title added to cart")));
+                context.read<CartCubit>().addItem(
+                      CartItem(
+                        title: title,
+                        image: image,
+                        price: double.parse(price.replaceAll('\$', '')),
+                      ),
+                    );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("$title added to cart")),
+                );
               },
               height: 50,
             ),

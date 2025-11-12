@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mysmallshop/theme/app_colors.dart';
+import 'package:mysmallshop/features/theme/app_colors.dart';
 
 class PromoBannerWidget extends StatelessWidget {
   const PromoBannerWidget({super.key});
