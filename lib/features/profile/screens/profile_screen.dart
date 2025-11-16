@@ -80,7 +80,6 @@ class ProfileScreen extends StatelessWidget {
 
             const Gap(25),
 
-            // Profile options
             ProfileOption(
               icon: Icons.location_on_outlined,
               title: "Shipping Address",

@@ -7,50 +7,109 @@ class PromoBannerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 140,
+      height: 150,
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         gradient: const LinearGradient(
-          colors: [AppColors.tealPrimary, Color.fromARGB(255, 123, 177, 171)],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.tealPrimary, Color(0xFF66AFA8)],
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Stack(
         children: [
           Positioned(
-            right: 0,
-            bottom: 0,
-            top: 0,
-            child: Opacity(
-              opacity: 0.7,
-              child: Image.asset(
-                'assets/images/hamburger.png',
-                fit: BoxFit.cover,
-                width: 150,
+            right: -10,
+            bottom: -5,
+            child: Transform.rotate(
+              angle: -0.20,
+              child: Opacity(
+                opacity: 0.85,
+                child: Image.asset('assets/images/logo.png', height: 140),
               ),
             ),
           ),
+
+          Positioned(
+            top: -20,
+            left: -30,
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.12),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -10,
+            right: 80,
+            child: Container(
+              width: 70,
+              height: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.10),
+              ),
+            ),
+          ),
+
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  "Big Sale!",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.25),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    "SPECIAL OFFER",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1,
+                    ),
                   ),
                 ),
-                SizedBox(height: 8),
-                Text(
+
+                const SizedBox(height: 12),
+
+                const Text(
+                  "Big Sale",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                    height: 1.1,
+                  ),
+                ),
+
+                const SizedBox(height: 6),
+
+                const Text(
                   "Up to 50% OFF on selected items",
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                    height: 1.3,
+                  ),
                 ),
               ],
             ),
