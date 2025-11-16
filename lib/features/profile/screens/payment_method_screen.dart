@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import '../../cart/cart_cubit.dart';
-import '../widgets/order_sucess_screen.dart';
-import '../../../widgets/custom_elevated_button.dart';
+import 'package:mysmallshop/features/cart/cart_cubit.dart';
+import 'package:mysmallshop/features/profile/widgets/order_sucess_screen.dart';
+import 'package:mysmallshop/widgets/custom_elevated_button.dart';
+
 
 class PaymentMethodScreen extends StatefulWidget {
   const PaymentMethodScreen({super.key});
@@ -72,7 +73,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             ),
             const Divider(),
 
-            // Card Payment
             RadioListTile<String>(
               value: 'Card Payment',
               groupValue: _selectedMethod,
@@ -81,7 +81,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               secondary: const Icon(Icons.credit_card, color: Colors.teal),
             ),
 
-            // Card Form
             if (_selectedMethod == 'Card Payment') ...[
               const Gap(16),
               Form(

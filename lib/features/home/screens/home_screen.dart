@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
+import 'package:mysmallshop/core/category/category_cubit.dart';
+import 'package:mysmallshop/core/category/category_model.dart';
+import 'package:mysmallshop/core/category/category_state.dart';
+import 'package:mysmallshop/core/product/product_cubit.dart';
+import 'package:mysmallshop/core/product/product_model.dart';
+import 'package:mysmallshop/core/product/product_state.dart';
 import 'package:mysmallshop/features/cart/cart_cubit.dart';
 import 'package:mysmallshop/features/cart/cart_item.dart';
 import 'package:mysmallshop/features/cart/cart_screen.dart';
-import 'package:mysmallshop/features/cart/cart_state.dart';
-import 'package:mysmallshop/features/categories/categories_screen.dart';
-import 'package:mysmallshop/features/home/widgets/categories_list.dart';
 import 'package:mysmallshop/features/home/widgets/home_appbar.dart';
-import 'package:mysmallshop/features/home/widgets/products_grid_builder.dart';
-import 'package:mysmallshop/features/home/widgets/promo_banner.dart';
-import 'package:mysmallshop/features/home/widgets/search_bar_widget.dart';
+import 'package:mysmallshop/features/home/widgets/home_page_body.dart';
 import 'package:mysmallshop/features/profile/screens/profile_screen.dart';
+import 'package:mysmallshop/core/category/categories_screen.dart';
 import 'package:mysmallshop/widgets/bottom_nav_bar_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,94 +22,107 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int _currentIndex = 0;
   final TextEditingController _searchController = TextEditingController();
   String _searchName = '';
+  List<Category> _categories = [];
+  List<Product> _filteredProducts = [];
+
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    context.read<ProductCubit>().fetchProducts();
+    context.read<CategoryCubit>().loadCategories();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onTabTapped(int index) {
+    setState(() => _currentIndex = index);
+    _pageController.jumpToPage(index);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final products =
-        List.generate(
-          6,
-          (index) => {
-            'image': 'assets/images/image.png',
-            'title': 'Product $index',
-            'price': '\$${(index + 1) * 15}.00',
-            'description': 'This is a detailed description of Product $index.',
-            'rating': '4.5',
-          },
-        ).where((product) {
-          if (_searchName.isEmpty) return true;
-          return product['title']!.toLowerCase().contains(
-            _searchName.toLowerCase(),
-          );
-        }).toList();
-
-    final pages = [
-      _buildHomePage(products),
-      const Center(child: CategoriesScreen()),
-      const Center(child: CartScreen()),
-      const Center(child: ProfileScreen()),
-    ];
-
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: _currentIndex == 0 ? const HomeAppbar() : null,
-        body: pages[_currentIndex],
-        bottomNavigationBar: BottomNavBarWidget(
-          currentIndex: _currentIndex,
-          onTap: (index) => setState(() => _currentIndex = index),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHomePage(List<Map<String, String>> products) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+      appBar: _currentIndex == 0 ? const HomeAppbar() : null,
+      body: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
         children: [
-          const CategoriesList(),
-          const Gap(10),
-          SearchBarWidget(
-            controller: _searchController,
-            onChanged: (value) => setState(() => _searchName = value),
-          ),
-          const Gap(10),
-          const Text(
-            "Discover Our Best Deals",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const Gap(10),
-          const PromoBannerWidget(),
-          const Gap(10),
-          const Text(
-            "Products",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
-          const Gap(15),
-          BlocBuilder<CartCubit, CartState>(
-            builder: (context, cartState) {
-              return ProductsGridBuilder(
-                products: products,
-                onAddToCart: (product) {
-                  context.read<CartCubit>().addItem(
-                    CartItem(
-                      title: product['title']!,
-                      image: product['image']!,
-                      price: double.parse(
-                        product['price']!.replaceAll('\$', ''),
+          BlocBuilder<ProductCubit, ProductState>(
+            builder: (context, state) {
+              if (state is ProductLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is ProductLoaded) {
+                _filteredProducts =
+                    state.products
+                        .where(
+                          (p) => p.title.toLowerCase().contains(
+                            _searchName.toLowerCase(),
+                          ),
+                        )
+                        .toList();
+
+                return HomePageBody(
+                  products: _filteredProducts,
+                  searchController: _searchController,
+                  onSearchChanged:
+                      (value) => setState(() => _searchName = value),
+                  onAddToCart:
+                      (product) => context.read<CartCubit>().addItem(
+                        CartItem(
+                          title: product.title,
+                          image:
+                              product.images.isNotEmpty
+                                  ? product.images.first
+                                  : '',
+                          price: product.price,
+                        ),
                       ),
-                    ),
-                  );
-                },
-              );
+                );
+              }
+              if (state is ProductError) {
+                return Center(child: Text(state.message));
+              }
+              return const SizedBox.shrink();
             },
           ),
+
+          BlocBuilder<CategoryCubit, dynamic>(
+            builder: (context, state) {
+              if (state is CategoryLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is CategoryLoaded) {
+                _categories = state.categories;
+                return CategoriesScreen(categories: _categories);
+              }
+              if (state is CategoryError) {
+                return Center(child: Text(state.message));
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+
+          const CartScreen(),
+
+          const ProfileScreen(),
         ],
+      ),
+      bottomNavigationBar: BottomNavBarWidget(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
       ),
     );
   }
