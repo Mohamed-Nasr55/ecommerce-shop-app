@@ -4,7 +4,12 @@ import 'package:mysmallshop/core/product/product_model.dart';
 class ProductsRepository {
   final Dio dio;
 
-  ProductsRepository({Dio? dioClient}) : dio = dioClient ?? Dio();
+  ProductsRepository({Dio? dioClient}) : dio = dioClient ?? Dio(
+     BaseOptions(
+              connectTimeout: Duration(seconds: 10),
+              receiveTimeout: Duration(seconds: 10),
+            ),
+  );
 
   Future<List<Product>> fetchProducts() async {
     try {

@@ -19,7 +19,9 @@ void main() {
               (_) =>
                   ProductCubit(repository: productsRepository)..fetchProducts(),
         ),
-        BlocProvider<CategoryCubit>(create: (_) => CategoryCubit(repository: CategoriesRepository())),
+        BlocProvider<CategoryCubit>(
+          create: (_) => CategoryCubit(repository: CategoriesRepository()),
+        ),
         BlocProvider(create: (_) => ThemeCubit()),
         BlocProvider(create: (_) => CartCubit()),
       ],
